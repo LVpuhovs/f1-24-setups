@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F1 24 Track Setups</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #fff;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background-color: #e10600;
+      padding: 20px 0;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .track-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    .track-button {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .track-button:hover {
+      background-color: #444;
+    }
+    .track-button.active {
+      background-color: #e10600;
+    }
+    .setup-container {
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .track-title {
+      font-size: 1.8rem;
+      margin-top: 0;
+      border-bottom: 2px solid #e10600;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .setup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .setup-section {
+      background-color: #252525;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .setup-section h3 {
+      margin-top: 0;
+      color: #e10600;
+      font-size: 1.2rem;
+      border-bottom: 1px solid #444;
+      padding-bottom: 5px;
+    }
+    .setup-item {
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .setup-item span:first-child {
+      color: #aaa;
+    }
+    .setup-item span:last-child {
+      font-weight: bold;
+    }
+    .search-container {
+      margin-bottom: 20px;
+    }
+    #trackSearch {
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+      border: none;
+      background-color: #333;
+      color: white;
+      font-size: 1rem;
+    }
+    .hidden {
+      display: none;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      border-top: 1px solid #333;
+      color: #888;
+    }
+    @media (max-width: 768px) {
+      .setup-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 480px) {
+      .setup-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>F1 24 Track Setups</h1>
+  </header>
+
+  <div class="container">
+    <div class="search-container">
+      <input type="text" id="trackSearch" placeholder="Search for a track...">
+    </div>
+
+    <div class="track-selector" id="trackButtons">
+      <!-- Track buttons will be generated here -->
+    </div>
+
+    <div id="setupsContainer">
+      <!-- Track setups will be shown here -->
+    </div>
+  </div>
+
+  <footer>
+    <p>F1 24 Track Setups | Updated April 2025</p>
+  </footer>
+
+  <script>
+    const trackSetups = [
+  {
+    name: "Abu Dhabi",
+    aero: { front: 47, rear: 30 },
+    transmission: { onThrottle: 100, offThrottle: 40, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 6, frontARB: 19, rearARB: 18, frontHeight: 20, rearHeight: 54 },
+    brakes: { pressure: 100, bias: 55 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Bahrain",
+    aero: { front: 50, rear: 46 },
+    transmission: { onThrottle: 100, offThrottle: 30, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 1, frontARB: 18, rearARB: 16, frontHeight: 20, rearHeight: 60 },
+    brakes: { pressure: 100, bias: 56 },
+    tyres: { front: "24.2", rear: "21.3" }
+  },
+  {
+    name: "Saudi Arabia",
+    aero: { front: 27, rear: 18 },
+    transmission: { onThrottle: 100, offThrottle: 40, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 1, frontARB: 21, rearARB: 21, frontHeight: 22, rearHeight: 60 },
+    brakes: { pressure: 100, bias: 55 },
+    tyres: { front: "25.7", rear: "22.0" }
+  },
+  {
+    name: "Qatar",
+    aero: { front: 50, rear: 48 },
+    transmission: { onThrottle: 100, offThrottle: 30, engineBraking: 90 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 39, rearSus: 9, frontARB: 21, rearARB: 18, frontHeight: 23, rearHeight: 48 },
+    brakes: { pressure: 100, bias: 53 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "China",
+    aero: { front: 40, rear: 35 },
+    transmission: { onThrottle: 100, offThrottle: 40, engineBraking: 80 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 16, frontARB: 6, rearARB: 21, frontHeight: 24, rearHeight: 55 },
+    brakes: { pressure: 100, bias: 56 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Australia",
+    aero: { front: 44, rear: 28 },
+    transmission: { onThrottle: 100, offThrottle: 30, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 12, frontARB: 21, rearARB: 21, frontHeight: 20, rearHeight: 63 },
+    brakes: { pressure: 100, bias: 55 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Japan",
+    aero: { front: 38, rear: 42 },
+    transmission: { onThrottle: 100, offThrottle: 40, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 4, frontARB: 21, rearARB: 21, frontHeight: 25, rearHeight: 61 },
+    brakes: { pressure: 100, bias: 54 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Austria",
+    aero: { front: 40, rear: 22 },
+    transmission: { onThrottle: 100, offThrottle: 30, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 3, frontARB: 21, rearARB: 21, frontHeight: 24, rearHeight: 55 },
+    brakes: { pressure: 100, bias: 55 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Mexico",
+    aero: { front: 43, rear: 30 },
+    transmission: { onThrottle: 100, offThrottle: 35, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 5, frontARB: 19, rearARB: 21, frontHeight: 23, rearHeight: 54 },
+    brakes: { pressure: 100, bias: 54 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Spain",
+    aero: { front: 50, rear: 42 },
+    transmission: { onThrottle: 100, offThrottle: 30, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 1, frontARB: 21, rearARB: 21, frontHeight: 21, rearHeight: 60 },
+    brakes: { pressure: 100, bias: 54 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Silverstone UK",
+    aero: { front: 34, rear: 27 },
+    transmission: { onThrottle: 100, offThrottle: 40, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 6, frontARB: 21, rearARB: 18, frontHeight: 25, rearHeight: 60 },
+    brakes: { pressure: 100, bias: 53 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Texas",
+    aero: { front: 50, rear: 40 },
+    transmission: { onThrottle: 100, offThrottle: 35, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 7, frontARB: 21, rearARB: 21, frontHeight: 23, rearHeight: 59 },
+    brakes: { pressure: 100, bias: 55 },
+    tyres: { front: "24.2", rear: "20.9" }
+  },
+  {
+    name: "Netherlands",
+    aero: { front: 50, rear: 35 },
+    transmission: { onThrottle: 100, offThrottle: 25, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 3, frontARB: 21, rearARB: 21, frontHeight: 22, rearHeight: 62 },
+    brakes: { pressure: 100, bias: 54 },
+    tyres: { front: "max", rear: "24.0" }
+  },
+  {
+    name: "Hungary",
+    aero: { front: 50, rear: 50 },
+    transmission: { onThrottle: 100, offThrottle: 10, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 1, frontARB: 21, rearARB: 21, frontHeight: 21, rearHeight: 54 },
+    brakes: { pressure: 100, bias: 54 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Belgium",
+    aero: { front: 15, rear: 4 },
+    transmission: { onThrottle: 100, offThrottle: 10, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 40, rearSus: 1, frontARB: 21, rearARB: 21, frontHeight: 22, rearHeight: 55 },
+    brakes: { pressure: 100, bias: 54 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Miami",
+    aero: { front: 29, rear: 19 },
+    transmission: { onThrottle: 100, offThrottle: 35, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 5, frontARB: 21, rearARB: 21, frontHeight: 22, rearHeight: 52 },
+    brakes: { pressure: 100, bias: 56 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Singapore",
+    aero: { front: 50, rear: 50 },
+    transmission: { onThrottle: 100, offThrottle: 20, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 2, frontARB: 10, rearARB: 21, frontHeight: 21, rearHeight: 64 },
+    brakes: { pressure: 100, bias: 54 },
+    tyres: { front: "27.0", rear: "24.3" }
+  },
+  {
+    name: "Brazil",
+    aero: { front: 50, rear: 40 },
+    transmission: { onThrottle: 100, offThrottle: 35, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 3, frontARB: 10, rearARB: 21, frontHeight: 24, rearHeight: 55 },
+    brakes: { pressure: 100, bias: 54 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Baku",
+    aero: { front: 30, rear: 20 },
+    transmission: { onThrottle: 100, offThrottle: 40, engineBraking: 80 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 3, frontARB: 21, rearARB: 21, frontHeight: 21, rearHeight: 54 },
+    brakes: { pressure: 100, bias: 55 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Monaco",
+    aero: { front: 50, rear: 50 },
+    transmission: { onThrottle: 100, offThrottle: 20, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 38, rearSus: 3, frontARB: 13, rearARB: 13, frontHeight: 22, rearHeight: 59 },
+    brakes: { pressure: 97, bias: 54 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Canada",
+    aero: { front: 41, rear: 30 },
+    transmission: { onThrottle: 100, offThrottle: 35, engineBraking: 90 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 2, frontARB: 21, rearARB: 21, frontHeight: 22, rearHeight: 60 },
+    brakes: { pressure: 100, bias: 54 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Vegas",
+    aero: { front: 9, rear: 0 },
+    transmission: { onThrottle: 100, offThrottle: 40, engineBraking: 100 },
+    suspensionGeometry: "all left",
+    suspension: { frontSus: 41, rearSus: 4, frontARB: 21, rearARB: 21, frontHeight: 22, rearHeight: 61 },
+    brakes: { pressure: 100, bias: 54 },
+    tyres: { front: "max", rear: "max" }
+  },
+  {
+    name: "Imola",
+    aero: { front: null, rear: null },
+    transmission: { onThrottle: null, offThrottle: null, engineBraking: null },
+    suspensionGeometry: null,
+    suspension: { frontSus: null, rearSus: null, frontARB: null, rearARB: null, frontHeight: null, rearHeight: null },
+    brakes: { pressure: null, bias: null },
+    tyres: { front: null, rear: null }
+  },
+  {
+    name: "Monza",
+    aero: { front: null, rear: null },
+    transmission: { onThrottle: null, offThrottle: null, engineBraking: null },
+    suspensionGeometry: null,
+    suspension: { frontSus: null, rearSus: null, frontARB: null, rearARB: null, frontHeight: null, rearHeight: null },
+    brakes: { pressure: null, bias: null },
+    tyres: { front: null, rear: null }
+  },
+  {
+    name: "Portugal",
+    aero: { front: null, rear: null },
+    transmission: { onThrottle: null, offThrottle: null, engineBraking: null },
+    suspensionGeometry: null,
+    suspension: { frontSus: null, rearSus: null, frontARB: null, rearARB: null, frontHeight: null, rearHeight: null },
+    brakes: { pressure: null, bias: null },
+    tyres: { front: null, rear: null }
+  }
+];
+
+
+    // Sort tracks alphabetically
+    trackSetups.sort((a, b) => a.name.localeCompare(b.name));
+
+    const trackButtonsContainer = document.getElementById('trackButtons');
+    const setupsContainer = document.getElementById('setupsContainer');
+    const trackSearch = document.getElementById('trackSearch');
+
+    // Generate track buttons
+    trackSetups.forEach((track, index) => {
+      const button = document.createElement('button');
+      button.className = 'track-button';
+      button.textContent = track.name;
+      button.dataset.index = index;
+      button.addEventListener('click', () => showTrackSetup(index));
+      trackButtonsContainer.appendChild(button);
+    });
+
+    // Search functionality
+    trackSearch.addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      document.querySelectorAll('.track-button').forEach(button => {
+        const trackName = button.textContent.toLowerCase();
+        if (trackName.includes(searchTerm)) {
+          button.classList.remove('hidden');
+        } else {
+          button.classList.add('hidden');
+        }
+      });
+    });
+
+    // Show track setup
+    function showTrackSetup(index) {
+      // Clear active buttons
+      document.querySelectorAll('.track-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Set active button
+      document.querySelector(`.track-button[data-index="${index}"]`).classList.add('active');
+      
+      // Get track data
+      const track = trackSetups[index];
+      
+      // Create setup HTML
+      setupsContainer.innerHTML = `
+        <div class="setup-container">
+          <h2 class="track-title">${track.name}</h2>
+          <div class="setup-grid">
+            <div class="setup-section">
+              <h3>Aerodynamics</h3>
+              <div class="setup-item">
+                <span>Front Wing:</span>
+                <span>${track.aero.front}</span>
+              </div>
+              <div class="setup-item">
+                <span>Rear Wing:</span>
+                <span>${track.aero.rear}</span>
+              </div>
+            </div>
+            
+            <div class="setup-section">
+              <h3>Transmission</h3>
+              <div class="setup-item">
+                <span>On Throttle:</span>
+                <span>${track.transmission.onThrottle}%</span>
+              </div>
+              <div class="setup-item">
+                <span>Off Throttle:</span>
+                <span>${track.transmission.offThrottle}%</span>
+              </div>
+              <div class="setup-item">
+                <span>Engine Braking:</span>
+                <span>${track.transmission.engineBraking}%</span>
+              </div>
+            </div>
+            
+            <div class="setup-section">
+              <h3>Suspension Geometry</h3>
+              <div class="setup-item">
+                <span>Geometry:</span>
+                <span>${track.suspensionGeometry}</span>
+              </div>
+            </div>
+            
+            <div class="setup-section">
+              <h3>Suspension</h3>
+              <div class="setup-item">
+                <span>Front Suspension:</span>
+                <span>${track.suspension.frontSus}</span>
+              </div>
+              <div class="setup-item">
+                <span>Rear Suspension:</span>
+                <span>${track.suspension.rearSus}</span>
+              </div>
+              <div class="setup-item">
+                <span>Front Anti-Roll Bar:</span>
+                <span>${track.suspension.frontARB}</span>
+              </div>
+              <div class="setup-item">
+                <span>Rear Anti-Roll Bar:</span>
+                <span>${track.suspension.rearARB}</span>
+              </div>
+			  <div class="setup-item">
+                <span>Front Height:</span>
+                <span>${track.suspension.frontHeight}</span>
+              </div>
+              <div class="setup-item">
+                <span>Rear Height:</span>
+                <span>${track.suspension.rearHeight}</span>
+              </div>
+            </div>
+            
+            <div class="setup-section">
+              <h3>Brakes</h3>
+              <div class="setup-item">
+                <span>Pressure:</span>
+                <span>${track.brakes.pressure}%</span>
+              </div>
+              <div class="setup-item">
+                <span>Bias:</span>
+                <span>${track.brakes.bias}%</span>
+              </div>
+            </div>
+            
+            <div class="setup-section">
+              <h3>Tyres</h3>
+              <div class="setup-item">
+                <span>Front Pressure:</span>
+                <span>${track.tyres.front}</span>
+              </div>
+              <div class="setup-item">
+                <span>Rear Pressure:</span>
+                <span>${track.tyres.rear}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Show first track by default
+    showTrackSetup(0);
+  </script>
+</body>
+</html>
